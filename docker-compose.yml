@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres
+    env_file:
+      - docker/postgres/.env
+    volumes:
+      #- "./postgres/postgres.conf:/usr/local/etc/postgres/postgres.conf"
+      - database-data:/var/lib/postgresql/data:delegated
+    #command: "postgres -c config_file=/usr/local/etc/postgres/postgres.conf"
+    ports:
+      - "5434:5432"
+
+  app:
+    image: elixir:1.11
+    env_file:
+      - docker/app/.env
+    volumes:
+      - .:/app
+    ports:
+      - "4001:4000"
+    depends_on:
+      - postgres
+    command: /bin/bash -c "cd /app && mix local.hex --force && mix phx.server"
+
+volumes:
+  database-data:

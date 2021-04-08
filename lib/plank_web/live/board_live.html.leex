@@ -1,0 +1,63 @@
+<h1>
+  <%= @board.title %>
+</h1>
+
+<div class="row">
+  <%= for column <- @board.columns do %>
+  <div class="col-xl-4 mb-2 align-items-stretch">
+    <div class="card bg-info h-100 task-list">
+      <div class="card-header">
+        <span phx-hook="ContentEditable"
+            data-type="column"
+            data-column="<%= column.id %>"
+            id="column_<%= column.id %>"
+            class="card-title text-white"
+            contenteditable>
+          <%= column.title %>
+        </span>
+        <button class="btn btn-outline-light float-right" phx-click="add_card" phx-value-column="<%= column.id %>">Add card</button>
+      </div>
+      <div class="card-body column" data-column-id="<%= column.id %>">
+        <%= for card <- Enum.sort_by(column.cards, &(&1.id), :desc) do %>
+          <div data-card-id="<%= card.id %>" class="card task alert-success mb-2">
+            <div phx-hook="ContentEditable"
+                 data-type="card"
+                 data-card="<%= card.id %>"
+                 id="card_<%= card.id %>"
+                 class="card-body task-content"
+                 role="textbox"
+                 contenteditable>
+              <%= card.content %>
+            </div>
+            <div class="card-footer">
+              <!-- if user is owner show below -->
+              <div class="btn float-left close" phx-click="delete_card" phx-value-card="<%= card.id %>">
+                <i class="fas fa-lock-open"></i>
+                <div><small class="text-muted">Mike</small></div>
+              </div>
+              <div></div>
+              <div class="btn close" phx-click="delete_card" phx-value-card="<%= card.id %>">
+                <i class="fas fa-trash-alt"></i>
+              </div>
+            </div>
+          </div>
+
+        <% end %>
+      </div>
+      <div class="card-footer">
+        <span class="card-title text-white"><%= column.title %></span>
+        <button class="btn btn-outline-light float-right" phx-click="add_card" phx-value-column="<%= column.id %>">Add card</button>
+      </div>
+    </div>
+  </div>
+  <% end %>
+</div>
+<div class="row">
+  <div class="col-xl-12 mb-2 align-items-stretch">
+    <div class="card bg-info h-100 task-list">
+      <div class="col-xl-1 h-100">Trash</div>
+      <div class="col-xl-11 column trash-cards card-columns">
+      </div>
+    </div>
+  </div>
+</div>
