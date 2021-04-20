@@ -4,10 +4,10 @@ services:
   postgres:
     image: postgres
     env_file:
-      - docker/postgres/.env
+      - ./docker/postgres/.env
     volumes:
       #- "./postgres/postgres.conf:/usr/local/etc/postgres/postgres.conf"
-      - database-data:/var/lib/postgresql/data:delegated
+      - database-data:/var/lib/postgresql/data
     #command: "postgres -c config_file=/usr/local/etc/postgres/postgres.conf"
     ports:
       - "5434:5432"
@@ -15,14 +15,15 @@ services:
   app:
     image: elixir:1.11
     env_file:
-      - docker/app/.env
+      - ./docker/app/.env
     volumes:
       - .:/app
     ports:
-      - "4001:4000"
+      - "4000:4000"
     depends_on:
       - postgres
-    command: /bin/bash -c "cd /app && mix local.hex --force && mix phx.server"
+    # todo: build custom image so that we don't need this command
+    command: sh -c "apt-get update && apt-get install inotify-tools -y && cd /app && mix local.hex --force && mix local.rebar --force && mix deps.get && mix ecto.create && mix ecto.migrate && mix phx.server"
 
 volumes:
   database-data:

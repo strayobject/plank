@@ -1,14 +1,28 @@
 use Mix.Config
 
 # Configure your database
+#config :plank, Plank.Repo,
+#  username: System.get_env("DB_USERNAME"),
+#  password: System.get_env("DB_PASSWORD"),
+#  database: System.get_env("DB_DATABASE"),
+#  hostname: System.get_env("DB_HOST"),
+#  show_sensitive_data_on_connection_error: true,
+#  pool_size: String.to_integer(System.get_env("DB_POOL_SIZE")),
+#  port: String.to_integer(System.get_env("DB_PORT"))
+
+database_url =
+  System.get_env("DB_URL") ||
+    raise """
+    environment variable DB_URL is missing.
+    For example: ecto://USER:PASS@HOST:PORT/DATABASE
+    """
+
 config :plank, Plank.Repo,
-  username: System.get_env("kanban_user"),
-  password: System.get_env("RandomPassword"),
-  database: System.get_env("kanban"),
-  hostname: System.get_env("postgres"),
+  # ssl: true,
+  url: database_url,
   show_sensitive_data_on_connection_error: true,
-  pool_size: System.get_env("DB_POOL_SIZE"),
-  port: System.get_env("DB_PORT")
+  pool_size: String.to_integer(System.get_env("DB_POOL_SIZE"))
+
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -17,7 +31,9 @@ config :plank, Plank.Repo,
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :plank, PlankWeb.Endpoint,
-  http: [port: 4000],
+  http: [
+    port: String.to_integer(System.get_env("PORT") || "4000"),
+  ],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
@@ -75,3 +91,6 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+
+#import_config "dev.secret.exs"
