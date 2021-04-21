@@ -4,7 +4,7 @@ A board. Like Trello, but worse. Use at your own peril.
 
 ## Licence
 
-Plank is licenced under [GPLv3](https://github.com/strayobject/plank/blob/main/LICENSE)
+Plank is licenced under [AGPLv3](https://github.com/strayobject/plank/blob/main/LICENSE)
 
 ## Environment
 
