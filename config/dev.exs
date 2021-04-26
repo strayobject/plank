@@ -31,6 +31,9 @@ config :plank, Plank.Repo,
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :plank, PlankWeb.Endpoint,
+  url: [
+    host: System.get_env("HOST_DOMAIN") || "plank.local",
+  ],
   http: [
     port: String.to_integer(System.get_env("PORT") || "4000"),
   ],

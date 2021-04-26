@@ -28,6 +28,11 @@ when using Docker.
 Use `./bin/start.sh` to start the environment.
 Use `./bin/restart-app.sh` to restart the app container.
 
+Assuming you have not modified the `HOST_DOMAIN` in app/.env
+please add `127.0.0.1 plank.local` to your `hosts` file (usually, `/etc/hosts`)
+
+In your browser navigate to [plank.local:4000](http://plank.local:4000)  
+Irrespective of the above you can always use [localhost:4000](localhost:4000)
 
 ## Notes
 
