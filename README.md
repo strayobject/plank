@@ -36,12 +36,8 @@ Irrespective of the above you can always use [localhost:4000](localhost:4000)
 
 ## Notes
 
-As the project is in early stages, some manual steps
-are still required.
-
-Basic seeds are available should you wish 
-to use them and migrations may need to be
-run. Use `mix` for both.
+First run requires deps and ecto commands to run. To do that use:
+`./bin/update-app.sh`
 
 
 ## Standard Phoenix setup

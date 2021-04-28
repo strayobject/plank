@@ -13,7 +13,10 @@ services:
       - "5434:5432"
 
   app:
-    image: elixir:1.11
+    #image: elixir:1.11
+    build:
+      context: docker/app
+      dockerfile: Dockerfile
     env_file:
       - ./docker/app/.env
     volumes:
@@ -22,8 +25,6 @@ services:
       - "4000:4000"
     depends_on:
       - postgres
-    # todo: build custom image so that we don't need this command
-    command: sh -c "apt-get update && apt-get install inotify-tools -y && cd /app && mix local.hex --force && mix local.rebar --force && mix deps.get && mix ecto.create && mix ecto.migrate && mix phx.server"
 
 volumes:
   database-data:
