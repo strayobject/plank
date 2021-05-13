@@ -27,8 +27,13 @@
           </ul>
           </div>
           <div>
-            <%= link "Register", to: Routes.pow_registration_path(@conn, :new), class: "btn btn-outline-primary" %>
-            <%= link "Sign in", to: Routes.pow_session_path(@conn, :new), class: "btn btn-outline-primary" %>
+            <%= if Pow.Plug.current_user(@conn) do %>
+              Hello <%= Plank.Users.User.nice_name(@conn.assigns.current_user) %>
+              <%= link "Sign out", to: Routes.pow_session_path(@conn, :delete), method: :delete, class: "btn btn-outline-primary" %>
+            <% else %>
+              <%= link "Register", to: Routes.pow_registration_path(@conn, :new), class: "btn btn-outline-primary" %>
+              <%= link "Sign in", to: Routes.pow_session_path(@conn, :new), class: "btn btn-outline-primary" %>
+            <% end %>
           </div>
         </nav>
     </header>

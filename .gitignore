@@ -41,3 +41,6 @@ npm-debug.log
 
 # Ignore custom /bin/local files
 /bin/local-*
+
+# Ignore any custom data
+/docker/postgres/data/*

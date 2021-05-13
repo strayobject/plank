@@ -1,10 +1,19 @@
 defmodule PlankWeb.BoardLive do
   use PlankWeb, :live_view
+  alias PlankWeb.Credentials
 
-  def mount(_params, %{"board_id" => board_id}, socket) do
+  def render(assigns) do
+    Phoenix.View.render(PlankWeb.BoardView, "board_live.html", assigns)
+  end
+
+  def mount(_params, %{"board_id" => board_id, "current_user" => current_user}, socket) do
     with {:ok, board} <- Plank.Board.find(board_id) do
       PlankWeb.Endpoint.subscribe(topic(board_id))
-      {:ok, assign(socket, :board, board)}
+      {:ok, assign(
+        socket,
+        board: board,
+        current_user: current_user
+      )}
     else
       {:error, _reason} ->
         {:ok, redirect(socket, to: "/error")}
@@ -12,6 +21,9 @@ defmodule PlankWeb.BoardLive do
   end
 
   def handle_event("add_card", %{"column" => column_id}, socket) do
+    IO.inspect binding()
+    user = Pow.Plug.current_user(socket)
+    IO.inspect(user)
     {id, _} = Integer.parse(column_id)
     %Plank.Card{column_id: id, content: "Something new"} |> Plank.Repo.insert!()
     {:ok, new_board} = Plank.Board.find(socket.assigns.board.id)
@@ -20,7 +32,6 @@ defmodule PlankWeb.BoardLive do
   end
 
   def handle_event("delete_card", %{"card" => card_id}, socket) do
-    IO.inspect binding()
     {id, _} = Integer.parse(card_id)
     Plank.Card.soft_delete_card(id)
     {:ok, new_board} = Plank.Board.find(socket.assigns.board.id)
@@ -29,7 +40,7 @@ defmodule PlankWeb.BoardLive do
   end
 
   def handle_event("update_card", params, socket) do
-    IO.inspect binding()
+    IO.inspect(socket.assigns.current_user)
     card_id = params["card"]
     new_content = String.trim(params["value"])
     {id, _} = Integer.parse(card_id)
@@ -40,7 +51,6 @@ defmodule PlankWeb.BoardLive do
   end
 
   def handle_event("update_column", params, socket) do
-    IO.inspect binding()
     column_id = params["column"]
     new_content = params["value"]
     {id, _} = Integer.parse(column_id)

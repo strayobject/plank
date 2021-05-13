@@ -1,6 +1,6 @@
 defmodule Plank.Column do
   use Ecto.Schema
-  import Ecto.Changeset
+  import Ecto.{Changeset, Query}
   alias Plank.{Repo, Column}
 
   schema "columns" do
