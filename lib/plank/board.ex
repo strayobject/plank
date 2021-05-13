@@ -21,7 +21,6 @@ defmodule Plank.Board do
       nil -> {:error, :not_found}
       IO.inspect binding()
       board -> {:ok, board |> Plank.Repo.preload(columns: :cards)}
-
     end
   end
 end
