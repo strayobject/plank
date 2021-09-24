@@ -21,11 +21,10 @@ defmodule PlankWeb.BoardLive do
   end
 
   def handle_event("add_card", %{"column" => column_id}, socket) do
-    IO.inspect binding()
-    user = Pow.Plug.current_user(socket)
+    user = socket.assigns.current_user
     IO.inspect(user)
     {id, _} = Integer.parse(column_id)
-    %Plank.Card{column_id: id, content: "Something new"} |> Plank.Repo.insert!()
+    %Plank.Card{column_id: id, content: "Something new", user_id: user.id} |> Plank.Repo.insert!()
     {:ok, new_board} = Plank.Board.find(socket.assigns.board.id)
     PlankWeb.Endpoint.broadcast(topic(new_board.id), "board:updated", new_board)
     {:noreply, assign(socket, :board, new_board)}
@@ -40,7 +39,7 @@ defmodule PlankWeb.BoardLive do
   end
 
   def handle_event("update_card", params, socket) do
-    IO.inspect(socket.assigns.current_user)
+    user = socket.assigns.current_user
     card_id = params["card"]
     new_content = String.trim(params["value"])
     {id, _} = Integer.parse(card_id)

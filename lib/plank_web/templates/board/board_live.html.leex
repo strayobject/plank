@@ -33,7 +33,7 @@
             <!-- if user is owner show below -->
             <div class="btn float-left close" phx-click="delete_card" phx-value-card="<%= card.id %>">
               <i class="fas fa-lock-open"></i>
-              <div><small class="text-muted">Mike</small></div>
+              <div><small class="text-muted"><%= Plank.Users.User.nice_name(card.user) %></small></div>
             </div>
             <div></div>
             <div class="btn close" phx-click="delete_card" phx-value-card="<%= card.id %>">

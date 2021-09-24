@@ -1,6 +1,7 @@
 defmodule Plank.Board do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "boards" do
     field :title, :string
@@ -20,7 +21,18 @@ defmodule Plank.Board do
     case Plank.Board |> Plank.Repo.get(id) do
       nil -> {:error, :not_found}
       IO.inspect binding()
-      board -> {:ok, board |> Plank.Repo.preload(columns: :cards)}
+      board -> {:ok, get_preloaded_board(board.id)}
     end
+  end
+
+  #todo need to filter out soft deleted cards.
+  defp get_preloaded_board(board_id) do
+    board = Plank.Board
+      |> where([b], b.id == ^board_id)
+      |> join(:left, [b], c in assoc(b, :columns))
+      |> join(:left, [b, c], ca in assoc(c, :cards))
+      |> join(:left, [b, c, ca], u in assoc(ca, :user))
+      |> preload([b, c, ca, u], [columns: {c, cards: {ca, user: u}}])
+      |> Plank.Repo.one
   end
 end

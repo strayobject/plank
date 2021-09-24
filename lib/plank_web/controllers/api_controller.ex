@@ -4,8 +4,15 @@ defmodule PlankWeb.ApiController do
 
   @topic "boards"
 
-  def update_card(conn, %{"id" => id, "target_column_id" => target_column_id}) do
+  def update_card(conn, %{
+    "id" => id,
+    "target_column_id" => target_column_id,
+    "column_sort_order" => column_sort_order}) do
     with {:ok, card} <- Card.update(id, %{column_id: target_column_id}) do
+
+      # Todo: Update all cards in a column with new sort order.
+      Card.update_sort_order(column_sort_order)
+
       new_board = card.column.board
 
       PlankWeb.Endpoint.broadcast(

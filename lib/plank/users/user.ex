@@ -6,6 +6,7 @@ defmodule Plank.Users.User do
     pow_user_fields()
     field :name, :string
     field :nickname, :string
+    has_many :cards, Plank.Card
 
     timestamps()
   end

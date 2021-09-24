@@ -21,16 +21,25 @@ import dragula from "dragula"
 
 dragula(Array.from(document.querySelectorAll('.column')))
   .on('drop', (element, target) => {
+
+    let card_ids = [];
+    for (let item of target.children) {
+      card_ids.push(item.dataset.cardId);
+    }
+
     fetch('/api/cards/' + element.dataset.cardId, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        target_column_id: target.dataset.columnId
+        target_column_id: target.dataset.columnId,
+        column_sort_order: card_ids,
       })
     }).then(_res => console.log(_res))
   });
+
+
 
 
 let Hooks = {}
